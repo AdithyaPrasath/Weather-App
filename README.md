@@ -89,14 +89,15 @@ To run the application using Docker, you can create a Dockerfile and docker-comp
 # docker-compose.yml
 ```sh
 version: '3.8'
-
+```
 services:
   weather-tracker:
     build: .
     ports:
       - "5000:5000"
     environment:
-      - API_KEY=your_openweathermap_api_key ```
+      - API_KEY=your_openweathermap_api_key
+
 	  
 ## Build and Run with Docker
 
