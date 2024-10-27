@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Tracker</title>
+
+    <!-- Google Fonts for better typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- CSS for styling -->
+    <style>
+       * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }    
+
+body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            background-size: cover;
+            background-position: center;
+            animation: moveBackground 30s infinite alternate;
+        }
+        @keyframes moveBackground {
+    0% {
+        background-size: 100%;
+        background-position: center;
+    }
+    50% {
+        background-size: 105%;
+        background-position: center center;
+    }
+    100% {
+        background-size: 100%;
+        background-position: center;
+    }
+}
+
+/* Card styling */
+.card-custom {
+    width: 300px; /* Fixed width */
+    height: 400px; /* Fixed height */
+    background-color: transparent; 
+    background-color: rgba(0, 0, 0, 0.237);
+    border: 1px solid rgba(255, 255, 255, 0.5); /* White border with transparency */
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(20px);
+ 
+}
+
+.card-custom:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 20px rgba(136, 183, 195, 0.8), 0 0 30px rgba(65, 200, 230, 0.5); /* Dynamic light effect */
+}
+
+/* Other styles remain unchanged */
+/* Card body styling */
+.card-body {
+    padding: 1.5rem;
+    text-align: center;
+    color: #ffffff;
+    text-size-adjust: 1rem;
+}
+
+/* Title styling */
+.card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 1rem;
+}
+
+header {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            /* background: linear-gradient(90deg, #6b8a9b, #0b162f); */
+            border-radius: 25px;
+            max-width: 1450px;
+            margin: 20px auto;
+            height: 70px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(20px);
+ 
+        }
+        
+
+        header:hover {
+            background: linear-gradient(135deg, #1b1b1b, #121213);
+        }
+        .title {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            margin-right: auto;
+        }
+
+        .weather-form {
+            flex-grow: 1;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* .form-control {
+            margin-right: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+        } */
+
+        .row {
+            display: flex;
+            flex-wrap: wrap; /* Allow cards to wrap to the next line */
+            justify-content: center; /* Center cards in the row */
+        }
+
+        .animated-title {
+            color: #f8f9fa;
+            font-size: xx-large;
+        }
+
+        .container {
+            max-width: 90%;
+            margin: 0 auto;
+        }
+
+        .weather-card,
+        .threshold-form-card,
+        .forecast-card,
+        .metro-weather-card,
+        .daily-summary-card,
+        .viz-card,
+        .recent-searches-card {
+            background: transparent;
+            background-color: rgba(0, 0, 0, 0.26);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px; /* Add margin to create space between cards */
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+
+        .threshold-form-card .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .forecast-card .forecast-day,
+        .metro-weather-card .metro-weather,
+        .daily-summary-card .daily-summary,
+        .recent-searches-card .recent-search {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .forecast-card .forecast-day .forecast-temperature,
+        .metro-weather-card .metro-weather .metro-weather-temperature,
+        .daily-summary-card .daily-summary .daily-summary-temperature,
+        .recent-searches-card .recent-search .recent-search-city {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .viz-button {
+            margin-bottom: 1rem;
+        }
+        .slideshow-container {
+    position: relative;
+    max-width: 100%;
+    margin: auto;
+    background: transparent;
+}
+
+.weather-card {
+    display: none; /* Hide all cards by default */
+    padding: 1px;
+    border-radius: 5px;
+}
+
+.weather-card.active {
+    display: block; /* Show only the active card */
+}
+.input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Consistent spacing between input, select, and buttons */
+        }
+
+        /* Input, Select, and Button Styling */
+        .form-control, .search-btn, .mic-btn {
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 16px;
+        }
+
+        .form-control {
+            flex: 1;
+        }
+
+        .search-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 12px;
+            cursor: pointer;
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .search-icon {
+            margin-right: 5px;
+        }
+
+        .i mic-btn {
+            border-radius: 50%;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .input-group-append {
+    display: flex;
+    gap: 10px;
+}
+.btn-primary {
+            transition: background-color 0.3s, transform 0.2s;
+            padding: 15px 30px; /* Padding for a rectangular shape */
+            background-color: #09325e; /* Bootstrap primary blue color */
+            color: white; /* Text color */
+            border: none; /* No border */
+            border-radius: 5px; /* Slightly rounded corners */
+            font-size: 16px; /* Font size */
+            cursor: pointer; /* Pointer cursor on hover */
+            
+        }
+        .btn-primary:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+            transform: scale(1.05); /* Slightly enlarge on hover */
+        }
+        .viz-button {
+            transition: transform 0.2s; /* Add a scaling effect */
+            padding: 15px 30px; /* Padding for a rectangular shape */
+            background-color: #09325e; /* Bootstrap primary blue color */
+            color: white; /* Text color */
+            border: none; /* No border */
+            border-radius: 5px; /* Slightly rounded corners */
+            font-size: 16px; /* Font size */
+            cursor: pointer;
+        }
+        .viz-button:hover {
+            transform: scale(1.05); /* Slightly enlarge on hover */
+            background-color: #0056b3;
+        }
+        .form-control::placeholder {
+            color: white; /* Set placeholder text color to white */
+            opacity: 0.7; /* Optional: adjust opacity for a softer look */
+        }
+   </style>
+</head>
+<body> 
+    <div class="scene">
+    <!-- Header HTML -->
+        <header class="bg-primary text-white d-flex justify-content-between align-items-center p-3 position-relative shadow-sm">
+        <!-- Site Title -->
+            <div class="title">
+                <span class="font-weight-bold animated-title">Weather</span> 
+            </div>
+        
+            <!-- Weather Search Form -->
+            <div class="weather-form flex-grow-1 d-flex justify-content-end align-items-center">
+                <form id="weatherForm" class="d-flex align-items-center w-100">
+                    <div class="input-group w-100">
+                        <input type="text" id="cityInput" name="city" class="form-control rounded-pill mr-2" placeholder="Enter city name" required>
+                    
+                        <select id="tempUnit" name="temp_unit" class="form-control rounded-pill mr-2">
+                            <option value="C">Celsius</option>
+                            <option value="F">Fahrenheit</option>
+                        </select>
+                    
+                        <div class="input-group-append">
+                            <button class="search-btn rounded-circle" type="submit" data-toggle="tooltip" title="Search">
+                                <span class="search-icon">
+                                    <i class="fas fa-search"></i>Search
+                                </span> 
+                            </button>
+                            <button type="button" id="voiceSearchBtn" class="mic-btn" data-toggle="tooltip" title="Voice Search">
+                                <i class="fas fa-microphone"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </header>    
+    </div>
+    
+    <main class="container my-4">
+        <div class="row align-items-center justify-content-center">
+            <!-- Weather Card -->
+            <div class="col-md-4">
+                <div class="weather-card card mb-4 card-custom">
+                    <div class="card-body">
+                        <h2 class="card-title">Weather</h2>
+                    
+                        <h5>City: <span id="weatherCity"></span></h5>
+                        <p>
+                            Temperature: <span id="weatherTemp"></span> °C<br>
+                            Max Temp: <span id="weatherMaxTemp"></span> °C<br>
+                            Min Temp: <span id="weatherMinTemp"></span> °C<br>
+                            Condition: <span id="weatherCondition"></span><br>
+                            Wind Speed: <span id="weatherWind"></span> m/s<br>
+                            Visibility: <span id="weatherVisibility"></span> m<br>
+                            Humidity: <span id="weatherHumidity"></span> %<br>
+                            Pressure: <span id="weatherPressure"></span> hPa
+                        </p>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Threshold Form Card -->
+            <div class="col-md-4">
+                <div class="threshold-form-card card mb-4 card-custom">
+                    <div class="card-body">
+                        <h2 class="card-title">Set Temperature Threshold</h2>
+                        <form id="thresholdForm">
+                            <div class="form-group">
+                                <label for="city">City:</label><br>
+                                <input type="text" id="city" name="city" class="form-control" placeholder="Enter city name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="temp_threshold">Temperature Threshold (°C):</label><br>
+                                <input type="number" id="temp_threshold" name="temp_threshold" class="form-control" step="0.1" placeholder="Enter temperature threshold" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Set Threshold</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- 5-Day Forecast Card -->
+            <!-- <div class="col-md-4"> -->
+                <!-- <div class="forecast-card card mb-4 card-custom">
+                    <div class="card-body">
+                        <h2 class="card-title">5-Day Weather Forecast</h2>
+                        <div id="tenDayForecast">
+                            Forecast data will go here -->
+                        <!-- </div> -->
+                    <!-- </div> -->
+                <!-- </div> -->
+            <!-- </div> -->
+    
+            <!-- Metro Weather Card -->
+            <div class="col-md-4">
+                <div class="metro-weather-card card mb-4 card-custom">
+                    <div class="card-body">
+                        <h2 class="card-title">Metro City Weather Updates</h2>
+                        <div class="slideshow-container" id="metroWeatherSlides">
+                            <!-- Metro weather slides will go here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Daily Weather Summary Card -->
+            <div class="col-md-4">
+                <div class="daily-weather-summary-card mb-4 card-custom">
+                    <div class="card-body">
+                        <h2 class="card-title">Daily Weather Summary</h2>
+                        <div class="slideshow-container" id="dailyWeatherSlides">
+                            <!-- Daily weather slides will go here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Visualizations Card -->
+            <div class="col-md-4">
+                <div class="viz-card card mb-4 card-custom">
+                    <div class="card-body">
+                        <h2 class="card-title">Visualizations</h2>
+                        <button class="viz-button btn btn-outline-primary mb-2" onclick="window.location.href='/visualize_daily/Delhi'">
+                            <i class="fas fa-chart-line"></i> Daily Summary
+                        </button>
+                        <button class="viz-button btn btn-outline-primary mb-2" onclick="window.location.href='/visualize_historical'">
+                            <i class="fas fa-history"></i> Historical Trends
+                        </button>
+                        <button class="viz-button btn btn-outline-primary mb-2" onclick="window.location.href='/visualize_alerts'">
+                            <i class="fas fa-bell"></i> Triggered Alerts
+                        </button>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Recent Searches Card -->
+            <div class="col-md-4">
+                <div class="recent-searches-card card mb-4 card-custom">
+                    <div class="card-body">
+                        <h2 class="card-title">Recent Searches</h2>
+                        <div id="recent-searches">
+                            <!-- Recent search history will go here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+    
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  
+    <script>
+        let currentTime = new Date().getHours();
+        let sunriseBackground = '1161253.jpg'; // Replace with your sunrise background image
+        let cloudsSunBackground = 'MURAVIE-0055LSS-Blue-Sky-With-Clouds-Ceiling-Wallpaper-Mural-Swatch-690x460.jpg'; // Replace with your clouds sun background image
+        let sunsetBackground = '395.jpg'; // Replace with your sunset background image
+        let nightBackground = '5708.jpg'; // Replace with your nighttime background image
+
+        if (currentTime >= 5 && currentTime <= 8) {
+            document.body.style.backgroundImage = "url('https://images3.alphacoders.com/116/1161253.jpg')";
+        } else if (currentTime >= 8 && currentTime <= 16 ) {
+            document.body.style.backgroundImage = "url('https://silkinteriors.com.au/wp-content/uploads/2023/08/MURAVIE-0055LSS-Blue-Sky-With-Clouds-Ceiling-Wallpaper-Mural-Swatch-690x460.jpg')";
+        } else if (currentTime >= 16 && currentTime <= 18) {
+            document.body.style.backgroundImage = "url('https://4kwallpapers.com/images/walls/thumbs_3t/395.jpg')";
+        } else {
+            document.body.style.backgroundImage = "url('https://wallpapershome.com/images/pages/pic_h/5708.jpg')";
+        }
+
+        
+        
+        // Add this to your existing JavaScript code
+        document.addEventListener('DOMContentLoaded', function() {
+            const voiceSearchBtn = document.getElementById('voiceSearchBtn');
+            const cityInput = document.getElementById('cityInput');
+            const weatherForm = document.getElementById('weatherForm');
+    
+            if (!voiceSearchBtn || !cityInput || !weatherForm) {
+                console.error('Required elements not found');
+                return;
+            }
+    
+            // Check browser support for speech recognition
+            if ('webkitSpeechRecognition' in window) {
+                const recognition = new webkitSpeechRecognition();
+                let isListening = false;
+    
+                // Configure recognition
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                recognition.lang = 'en-US';
+    
+                // Voice button click handler
+                voiceSearchBtn.addEventListener('click', function(e) {
+                    e.preventDefault(); // Prevent form submission
+                    if (!isListening) {
+                        // Start listening
+                        recognition.start();
+                        isListening = true;
+                        voiceSearchBtn.classList.add('listening');
+                        voiceSearchBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>';
+    
+                        // Show feedback to user
+                        cityInput.placeholder = 'Listening...';
+                    } else {
+                        // Stop listening
+                        recognition.stop();
+                        isListening = false;
+                        voiceSearchBtn.classList.remove('listening');
+                        voiceSearchBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                        cityInput.placeholder = 'Enter city name';
+                    }
+                });
+    
+                // Recognition result handler
+                recognition.onresult = function(event) {
+                    const result = event.results[0][0].transcript;
+                    cityInput.value = result;
+                    isListening = false;
+                    voiceSearchBtn.classList.remove('listening');
+                    voiceSearchBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                    cityInput.placeholder = 'Enter city name';
+    
+                    // Automatically trigger weather search
+                    fetchWeatherData(result);
+                };
+    
+                // Recognition error handler
+                recognition.onerror = function(event) {
+                    console.error('Speech recognition error:', event.error);
+                    isListening = false;
+                    voiceSearchBtn.classList.remove('listening');
+                    voiceSearchBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                    cityInput.placeholder = 'Enter city name';
+    
+                    // Show error feedback to user
+                    alert('Voice recognition error. Please try again or type your search.');
+                };
+    
+                // Recognition end handler
+                recognition.onend = function() {
+                    isListening = false;
+                    voiceSearchBtn.classList.remove('listening');
+                    voiceSearchBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                    cityInput.placeholder = 'Enter city name';
+                };
+    
+                // Function to fetch weather data
+                function fetchWeatherData(city) {
+                    const tempUnit = document.getElementById('tempUnit').value;
+    
+                    // Show loading state
+                    const loadingIndicator = document.createElement('div');
+                    loadingIndicator.className = 'loading-indicator';
+                    loadingIndicator.innerHTML = 'Fetching weather data...';
+                    document.body.appendChild(loadingIndicator);
+    
+                    // Fetch weather data
+                    fetch('/get_weather', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: new URLSearchParams({
+                            'city': city,
+                            'temp_unit': tempUnit
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Remove loading indicator
+                        document.body.removeChild(loadingIndicator);
+    
+                        // Update weather display
+                        updateWeatherDisplay(data);
+    
+                        // Update forecast
+                        updateForecast(city);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        document.body.removeChild(loadingIndicator);
+                        alert('Error fetching weather data. Please try again.');
+                    });
+                }
+    
+                // Function to update weather display
+                function updateWeatherDisplay(data) {
+                    const weatherCard = document.querySelector('.weather-card');
+                    weatherCard.style.display = 'block';
+    
+                    // Update weather information
+                    document.getElementById('weatherCity').innerText = data.name;
+                    document.getElementById('weatherTemp').innerText = `${data.main.temp.toFixed(2)}`;
+                    document.getElementById('weatherMaxTemp').innerText = `${data.main.temp_max.toFixed(2)}`;
+                    document.getElementById('weatherMinTemp').innerText = `${data.main.temp_min.toFixed(2)}`;
+                    document.getElementById('weatherCondition').innerText = data.weather[0].main;
+                    document.getElementById('weatherWind').innerText = data.wind.speed;
+                    document.getElementById('weatherVisibility').innerText = data.visibility;
+                    document.getElementById(' weatherHumidity').innerText = data.main.humidity;
+                    document.getElementById('weatherPressure').innerText = data.main.pressure;
+    
+                    // Add temperature unit
+                    const tempUnit = document.getElementById('tempUnit').value;
+                    const unitSymbol = tempUnit === 'F' ? '°F' : '°C';
+                    document.getElementById('weatherTemp').innerText += ` ${unitSymbol}`;
+                    document.getElementById('weatherMaxTemp').innerText += ` ${unitSymbol}`;
+                    document.getElementById('weatherMinTemp').innerText += ` ${unitSymbol}`;
+                }
+    
+            } else {
+                // Hide voice button if speech recognition is not supported
+                if (voiceSearchBtn) {
+                    voiceSearchBtn.style.display = 'none';
+                }
+                console.log('Speech recognition not supported in this browser');
+            }
+        });
+    
+        // Handle weather search form submission
+        let currentForecastIndex = 0; // Track the current slide index
+
+function updateForecast(cityName) {
+    const encodedCity = encodeURIComponent(cityName);
+
+    fetch(`/get_forecast/${encodedCity}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error('Forecast error:', data.error);
+                return;
+            }
+
+            const forecastContainer = document.getElementById('tenDayForecast');
+            forecastContainer.innerHTML = ''; // Clear existing forecast
+
+            // Check if forecast data exists and is an array
+            if (data.forecast && Array.isArray(data.forecast)) {
+                data.forecast.forEach((day, index) => {
+                    const forecastCard = document.createElement('div');
+                    forecastCard.className = 'weather-card';
+
+                    // Set up card HTML with safe handling for undefined values
+                    try {
+                        forecastCard.innerHTML = `
+                            <div class="forecast-day">
+                                <h3>${new Date(day.date).toLocaleDateString()}</h3>
+                                <div class="forecast-details">
+                                    <p><i class="fas fa-temperature-high"></i> Day: ${day.temp_day?.toFixed(1) || 'N/A'}°C</p>
+                                    <p><i class="fas fa-temperature-low"></i> Min: ${day.temp_min?.toFixed(1) || 'N/A'}°C</p>
+                                    <p><i class="fas fa-temperature-high"></i> Max: ${day.temp_max?.toFixed(1) || 'N/A'}°C</p>
+                                    <p><i class="fas fa-cloud"></i> ${day.condition || 'N/A'}</p>
+                                    <p><i class="fas fa-tint"></i> Humidity: ${day.humidity || 'N/A'}%</p>
+                                    <p><i class="fas fa-wind"></i> Wind: ${day.wind_speed || 'N/A'} m/s</p>
+                                </div>
+                            </div>
+                        `;
+                        forecastContainer.appendChild(forecastCard);
+                    } catch (error) {
+                        console.error('Error creating forecast card:', error);
+                    }
+                });
+
+                // Display the first forecast card initially
+                showForecastSlide(currentForecastIndex);
+            } else {
+                forecastContainer.innerHTML = '<p>No forecast data available</p>';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching forecast:', error);
+            const forecastContainer = document.getElementById('tenDayForecast');
+            forecastContainer.innerHTML = '<p>Error loading forecast data</p>';
+        });
+}
+
+function showForecastSlide(index) {
+    const slides = document.querySelectorAll('#tenDayForecast .weather-card');
+    slides.forEach((slide, i) => {
+        slide.style.display = i === index ? 'block' : 'none';
+    });
+}
+
+function changeForecastSlide(n) {
+    const slides = document.querySelectorAll('#tenDayForecast .weather-card');
+    currentForecastIndex = (currentForecastIndex + n + slides.length) % slides.length;
+    showForecastSlide(currentForecastIndex);
+}
+
+// Auto-cycle slides every 3 seconds (optional)
+setInterval(() => changeForecastSlide(1), 3000);
+
+        // Update the weather form submission handler
+        document.getElementById('weatherForm').onsubmit = function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const cityName = formData.get('city');
+            const tempUnit = document.getElementById('tempUnit').value;
+    
+            // First update the current weather
+            fetch('/get_weather', {
+                method: 'POST',
+                body: new URLSearchParams({
+                    'city': cityName,
+                    'temp_unit': tempUnit
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Update current weather display
+                const weatherCard = document.querySelector('.weather-card');
+                weatherCard.style.display = 'block';
+    
+                document.getElementById('weatherCity').innerText = data.name;
+                document.getElementById('weatherTemp').innerText = `${data.main.temp.toFixed(2)}`;
+                document.getElementById('weatherMaxTemp').innerText = `${data.main.temp_max.toFixed(2)}`;
+                document.getElementById('weatherMinTemp').innerText = `${data.main.temp_min.toFixed(2)}`;
+                document.getElementById('weatherCondition').innerText = data.weather[0].main;
+                document.getElementById('weatherWind').innerText = data.wind.speed;
+                document.getElementById('weatherVisibility').innerText = data.visibility;
+                document.getElementById('weatherHumidity').innerText = data.main.humidity;
+                document.getElementById('weatherPressure').innerText = data.main.pressure;
+    
+                // Add temperature unit
+                const unitSymbol = tempUnit === 'F' ? '°F' : '°C';
+                document.getElementById('weatherTemp').innerText += ` ${unitSymbol}`;
+                document.getElementById('weatherMaxTemp').innerText += ` ${unitSymbol}`;
+                document.getElementById('weatherMinTemp').innerText += ` ${unitSymbol}`;
+    
+                // Then update the forecast updateForecast(cityName);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error fetching weather data');
+            });
+        };
+    
+        let currentMetroSlideIndex = 0;
+let currentDailySlideIndex = 0;
+
+function updateMetroWeatherData() {
+    const cities = ['Chennai', 'Bangalore', 'Kolkata', 'Delhi', 'Mumbai'];
+
+    const fetchWeatherData = cities.map(city => {
+        return fetch(`/get_weather?city=${city}`)
+            .then(response => response.json());
+    });
+
+    Promise.all(fetchWeatherData)
+        .then(data => {
+            const metroWeatherSlides = document.getElementById('metroWeatherSlides');
+            metroWeatherSlides.innerHTML = ''; // Clear existing data
+
+            data.forEach(weather => {
+                const card = document.createElement('div');
+                card.className = 'weather-card';
+                card.innerHTML = `
+                    
+                    <div class="card-title">City: ${weather.name}</div>
+                    <div class="card-info">
+                        Temperature: ${weather.main.temp.toFixed(2)} °C<br>
+                        Max Temp: ${weather.main.temp_max.toFixed(2)} °C<br>
+                        Min Temp: ${weather.main.temp_min.toFixed(2)} °C<br>
+                        Condition: ${weather.weather[0].main}<br>
+                        Wind Speed: ${weather.wind.speed} m/s<br>
+                        Visibility: ${weather.visibility} m<br>
+                        Humidity: ${weather.main.humidity} %<br>
+                        Pressure: ${weather.main.pressure} hPa
+                    </div>
+                `;
+                metroWeatherSlides.appendChild(card); // Append the new card to the container
+            });
+
+            // Show the first slide
+            showMetroSlides(currentMetroSlideIndex);
+        })
+        .catch(error => {
+            console.error('Error fetching weather data:', error); // Log any errors
+        });
+}
+
+function updateDailyWeatherSummary() {
+    fetch('/daily_summary')
+        .then(response => response.json())
+        .then(data => {
+            const dailyWeatherSlides = document.getElementById('dailyWeatherSlides');
+            dailyWeatherSlides.innerHTML = ''; // Clear existing data
+
+            if (Array.isArray(data)) {
+                data.forEach(summary => {
+                    const card = document.createElement('div');
+                    card.className = 'weather-card';
+                    card.innerHTML = `
+                        <div class="card-title">
+                            <i class="fas fa-city"></i> ${summary.city}
+                        </div>
+                        <div class="card-info">
+                            <div class="weather-detail">
+                                <i class="far fa-calendar"></i>
+                                <span>${new Date(summary.date).toLocaleDateString()}</span>
+                            </div>
+                            <div class="weather-detail">
+                                <i class="fas fa-temperature-high"></i>
+                                <span>Average: ${summary.avg_temp.toFixed(1)}°C</span>
+                            </div>
+                            <div class="weather-detail">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>Max: ${summary.max_temp.toFixed(1)}°C</span>
+                            </div>
+                            <div class="weather-detail">
+                                <i class="fas fa-arrow-down"></i>
+                                <span>Min: ${summary.min_temp.toFixed(1)}°C</span>
+                            </div>
+                            <div class="weather-detail">
+                                <i class="fas fa-cloud-rain"></i>
+                                <span>Precipitation: ${summary.total_precipitation.toFixed(1)} mm</span>
+                            </div>
+                            <div class="weather-detail">
+                                <i class="fas fa-wind"></i>
+                                <span>Wind: ${summary.avg_wind_speed.toFixed(1)} m/s</span>
+                            </div>
+                            <div class="weather-detail">
+                                <i class="fas fa-cloud"></i>
+                                <span>${summary.predominant_condition}</span>
+                            </div>
+                        </div>
+                    `;
+                    dailyWeatherSlides.appendChild(card);
+                });
+
+                // Show the first slide
+                showDailySlides(currentDailySlideIndex);
+            } else {
+                console.error('Expected an array but got:', data);
+                dailyWeatherSlides.innerHTML = '<p>No daily summary data available</p>';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching daily weather summary:', error);
+            dailyWeatherSlides.innerHTML = '<p>Error loading daily weather summary</p>';
+        });
+}
+
+function showMetroSlides(index) {
+    const slides = document.querySelectorAll('#metroWeatherSlides .weather-card');
+    slides.forEach((slide, i) => {
+        slide.style.display = (i === index) ? 'block' : 'none';
+    });
+}
+
+function showDailySlides(index) {
+    const slides = document.querySelectorAll('#dailyWeatherSlides .weather-card');
+    slides.forEach((slide, i) => {
+        slide.style.display = (i === index) ? 'block' : 'none';
+    });
+}
+
+function changeSlide(n) {
+    // Metro Slides
+    const metroSlides = document.querySelectorAll('#metroWeatherSlides .weather-card');
+    currentMetroSlideIndex = (currentMetroSlideIndex + n + metroSlides.length) % metroSlides.length;
+    showMetroSlides(currentMetroSlideIndex);
+
+    // Daily Slides
+    const dailySlides = document.querySelectorAll('#dailyWeatherSlides .weather-card');
+    currentDailySlideIndex = (currentDailySlideIndex + n + dailySlides.length) % dailySlides.length;
+    showDailySlides(currentDailySlideIndex);
+}
+
+// Call the functions periodically to fetch data
+setInterval(() => {
+    updateMetroWeatherData();
+    updateDailyWeatherSummary();
+}, 300000); // Update every 5 minutes
+
+// Change slides every 3 seconds
+setInterval(() => {
+    changeSlide(1); // Move to the next slide
+}, 3000); // 3000 ms = 3 seconds
+
+// Initial calls to populate data immediately
+updateMetroWeatherData();
+updateDailyWeatherSummary();
+
+    
+        
+    
+        // Add loading animation
+        function showLoading() {
+            const loader = document.createElement('div');
+            loader.className = 'loading-indicator';
+            loader.innerHTML = `
+                <div class="loader-spinner"></div>
+                <div class="loader-text">Loading...</div>
+            `;
+            document.body.appendChild(loader);
+        }
+    
+        function hideLoading() {
+            const loader = document.querySelector('.loading-indicator');
+            if (loader) {
+                loader.remove();
+            }
+        }
+    
+        let currentRecentSearchIndex = 0; // Track the current slide index
+
+function updateRecentSearches() {
+    fetch('/recent_searches')
+        .then(response => response.json())
+        .then(data => {
+            const recentSearchesContainer = document.getElementById('recent-searches');
+            recentSearchesContainer.innerHTML = ''; // Clear existing content
+
+            data.forEach(search => {
+                const searchCard = document.createElement('div');
+                searchCard.className = 'weather-card';
+                searchCard.innerHTML = `
+                    <div class="card-title">
+                        <i class="fas fa-history"></i> ${search.city}
+                    </div>
+                    <div class="card-info">
+                        <p><i class="fas fa-temperature-high"></i> Temperature: ${search.temp.toFixed(1)}°C</p>
+                        <p><i class="fas fa-arrow-up"></i> Max: ${search.max_temp.toFixed(1)}°C</p>
+                        <p><i class="fas fa-arrow-down"></i> Min: ${search.min_temp.toFixed(1)}°C</p>
+                        <p><i class="fas fa-cloud"></i> ${search.condition}</p>
+                        <p><i class="fas fa-wind"></i> Wind: ${search.wind} m/s</p>
+                        <p><i class="fas fa-eye"></i> Visibility: ${search.visibility} m</p>
+                        <p><i class="fas fa-tint"></i> Humidity: ${search.humidity}%</p>
+                        <p><i class="fas fa-compress-alt"></i> Pressure: ${search.pressure} hPa</p>
+                    </div>
+                `;
+                recentSearchesContainer.appendChild(searchCard);
+            });
+
+            // Display the first search card
+            showRecentSearchSlide(currentRecentSearchIndex);
+        })
+        .catch(error => {
+            console.error('Error fetching recent searches:', error);
+            const recentSearchesContainer = document.getElementById('recent-searches');
+            recentSearchesContainer.innerHTML = '<p>Error loading recent searches</p>';
+        });
+}
+
+function showRecentSearchSlide(index) {
+    const slides = document.querySelectorAll('#recent-searches .weather-card');
+    slides.forEach((slide, i) => {
+        slide.style.display = i === index ? 'block' : 'none';
+    });
+}
+
+function changeRecentSearchSlide(n) {
+    const slides = document.querySelectorAll('#recent-searches .weather-card');
+    currentRecentSearchIndex = (currentRecentSearchIndex + n + slides.length) % slides.length;
+    showRecentSearchSlide(currentRecentSearchIndex);
+}
+
+// Auto-cycle slides every 3 seconds
+setInterval(() => changeRecentSearchSlide(1), 3000);
+
+    
+        // Call this function after the page loads
+        document.addEventListener('DOMContentLoaded', updateRecentSearches);
+    
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+    
+                button.classList.add('active');
+                document.getElementById(button.getAttribute('data-tab')).classList.add('active');
+            });
+        });
+        // Handle threshold form submission
+        document.addEventListener('DOMContentLoaded', function() {
+    // Ensure the threshold form exists before trying to add an event listener
+    const thresholdForm = document.getElementById('thresholdForm');
+    if (thresholdForm) {
+        thresholdForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+
+            fetch('/set_threshold', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    alert(data.message);
+                    this.reset(); // Reset the form after submission
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while setting the threshold.');
+            });
+        });
+    } else {
+        console.error('Threshold form not found');
+    }
+});
+
+    </script>
+
+</body>
+</html>
