@@ -11,13 +11,13 @@ The Weather Tracker Application is a Flask-based web application that fetches re
 -Search History: Keep track of recent searches.
 -Visualizations: Generate visualizations for daily summaries, historical trends, and triggered alerts.
 
-##Design Choices
+## Design Choices
 -Flask Framework: Chosen for its simplicity and flexibility in building web applications.
 -SQLite Database: Lightweight and serverless database that is easy to integrate and manage for small-scale applications.
 -OpenWeatherMap API: Provides reliable weather data which is essential for the application.
 -Background Thread: Used for continuously checking weather conditions and sending alerts without blocking the main application.
 -Responsive UI: Designed with a focus on user experience, ensuring the application is accessible on different devices.
-##Dependencies
+## Dependencies
 To run this application, you need to have the following dependencies installed:
 ```sh
 Python 3.x
@@ -28,15 +28,15 @@ Matplotlib (for visualizations)
 Pandas (for data manipulation)
 ```
 
-##Installation
-###Clone the Repository:
+## Installation
+### Clone the Repository:
 
 ```sh
 git clone https://github.com/yourusername/weather-tracker.git
 cd weather-tracker
 ```
 
-##Create a Virtual Environment (optional but recommended):
+## Create a Virtual Environment (optional but recommended):
 
 ```sh
 python -m venv venv
@@ -45,24 +45,24 @@ source venv/bin/activate
 use `venv\Scripts\activate`
 ```
 
-##Install Dependencies:
+## Install Dependencies:
 
 `pip install Flask==2.0.2 requests==2.26.0 pandas matplotlib`
 
-##Set Up Database:
+## Set Up Database:
 
 The application will automatically create the SQLite database (weather_data.db) when it runs for the first time.
 
 -Configure Email Alerts: Update the send_email_alert function with your email credentials to enable email notifications for temperature alerts.
 
-##Run the Application:
+## Run the Application:
 
 ```sh
 python app.py
 ```
 The application will be available at http://127.0.0.1:5000/.
 
-##Running with Docker
+## Running with Docker
 To run the application using Docker, you can create a Dockerfile and docker-compose.yml file.
 
 ## Use the official Python image from the Docker Hub
@@ -86,7 +86,7 @@ To run the application using Docker, you can create a Dockerfile and docker-comp
 ## Command to run the application
 `CMD ["python", "app.py"]`
 
-#docker-compose.yml
+# docker-compose.yml
 ```sh
 version: '3.8'
 
@@ -96,16 +96,15 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - API_KEY=your_openweathermap_api_key
-	  ```
+      - API_KEY=your_openweathermap_api_key ```
 	  
-## 	Build and Run with Docker
+## Build and Run with Docker
 
-### 1.Build the Docker Image:
+### 1. Build the Docker Image:
 
 `docker-compose build`
 
-### 2.Run the Docker Container:
+### 2. Run the Docker Container:
 
 ```docker-compose up```
 
@@ -115,5 +114,5 @@ services:
 -Visualizations: Click buttons to visualize daily summaries, historical trends, and triggered alerts.
 -Recent Searches: View the recent search history for quick access to previously searched cities.
 
-##Contributing
-If you want to contribute to this project, feel free to fork the repository and submit a pull request. Any contributions, bug fixes, or feature requests are welcome!
+## Contributing
+Please feel free to fork the repository and submit a pull request if you'd like to contribute to this project. Any contributions, bug fixes, or feature requests are welcome!
