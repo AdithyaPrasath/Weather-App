@@ -1,3 +1,6 @@
 Flask==2.0.2
 requests==2.26.0
 sqlite3
+pandas
+matplotlib
+smtplib
