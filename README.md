@@ -13,6 +13,8 @@ https://e692-2405-201-e02c-a24c-bcaf-b3a6-8f4e-b6c6.ngrok-free.app
 -Daily Weather Summary: Store and visualize daily weather summaries.
 -Search History: Keep track of recent searches.
 -Visualizations: Generate visualizations for daily summaries, historical trends, and triggered alerts.
+-Background will change according to the time
+-Voice recognition for weather search
 
 ## Design Choices
 -Flask Framework: Chosen for its simplicity and flexibility in building web applications.
