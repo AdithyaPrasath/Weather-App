@@ -1,13 +1,13 @@
 # Weather Tracker Application
 ## Overview
-The Weather Tracker Application is a Flask-based web application that fetches real-time weather data for various metro cities in India. It allows users to view current weather conditions, set temperature thresholds for alerts, and visualize historical weather trends. The application uses OpenWeatherMap API to retrieve weather data and SQLite for data storage.
+The Weather Tracker Application is a Flask-based web application that fetches real-time weather data for various metro cities in India. It allows users to view current weather conditions, set temperature thresholds for alerts, view 5-day forecast weather, and visualize historical weather trends. The application uses the OpenWeatherMap API to retrieve weather data and SQLite for data storage.
 
 # Web Server URL
 https://e692-2405-201-e02c-a24c-bcaf-b3a6-8f4e-b6c6.ngrok-free.app
 
 ## Features
 
--Current Weather Data: Fetch and display current weather data for selected cities.
+-Current Weather Data: Fetch and display weather data for selected cities.
 -Temperature Thresholds: Set temperature thresholds and receive alerts via email.
 -Forecast Data: Retrieve and display a 5-day weather forecast.
 -Daily Weather Summary: Store and visualize daily weather summaries.
