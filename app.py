@@ -205,6 +205,30 @@ def send_email_alert(city, temp):
         server.login(sender_email, password)
         server.sendmail(sender_email, receiver_email, message.as_string())
 
+def save_forecast_data(city, forecast_data):
+    """
+    Save the 5-day forecast data into the 'forecast' table in the database.
+    Each day's data includes date, temperature, weather conditions, humidity, and wind speed.
+    """
+    with sqlite3.connect(DATABASE) as conn:
+        c = conn.cursor()
+        for day in forecast_data:
+            # Insert each day's forecast into the forecast table
+            c.execute('''
+                INSERT INTO forecast (city, date, temp_day, temp_min, temp_max, condition, humidity, wind_speed)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                city,
+                day['date'],
+                day['temp_day'],
+                day['temp_min'],
+                day['temp_max'],
+                day['condition'],
+                day['humidity'],
+                day['wind_speed']
+            ))
+        conn.commit()
+    print(f"Forecast data for {city} saved successfully.")
 
 @app.route('/')
 def home():
@@ -242,27 +266,27 @@ def get_weather():
         return jsonify(weather_data)
     
 
-
-
 @app.route('/get_forecast/<city>')
 def get_forecast(city):
     try:
         url = f'http://api.openweathermap.org/data/2.5/forecast?q={city}&appid={API_KEY}&units=metric'
         response = requests.get(url)
+        
+        if response.status_code != 200:
+            return jsonify({'error': 'Failed to fetch forecast data'}), response.status_code
+
         data = response.json()
         
         if 'list' not in data:
             return jsonify({'error': 'No forecast data available'}), 404
-            
-        # Process the forecast data
+        
         forecast_data = []
         seen_dates = set()
         
         for item in data['list']:
             date = datetime.fromtimestamp(item['dt']).strftime('%Y-%m-%d')
             
-            # Only take one forecast per day
-            if date not in seen_dates and len(forecast_data) < 10:
+            if date not in seen_dates:
                 seen_dates.add(date)
                 forecast_data.append({
                     'date': date,
@@ -273,10 +297,18 @@ def get_forecast(city):
                     'humidity': item['main']['humidity'],
                     'wind_speed': item['wind']['speed']
                 })
-        
-        return jsonify({'forecast': forecast_data})  # Wrap in an object with 'forecast' key
+            
+            if len(forecast_data) >= 5:
+                break
+
+        # Save forecast data to the database
+        save_forecast_data(city, forecast_data)
+
+        return jsonify({'forecast': forecast_data})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
 
 @app.route('/set_threshold', methods=['POST'])
 def set_threshold():
